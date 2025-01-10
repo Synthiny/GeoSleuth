@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoSleuth | Extract</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: black;
+            color: rgb(0, 0, 0);
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: left;
+            align-items: left;
+            text-align: left;
+        }
+        .location {
+            font-size: 20px;
+        }
+        .error {
+            color: red;
+        }
+        #status {
+            display: none; /* Hide status text */
+        }
+        #coordinates,
+        #accuracy {
+            font-size: 24px;
+            padding: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="location">
+        <p id="coordinates"></p>
+        <p id="accuracy"></p>
+    </div>
+
+    <script>
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                const accuracy = position.coords.accuracy;
+
+                // Display coordinates and accuracy on the page
+                document.getElementById('coordinates').textContent = `${lat}, ${lon}`;
+                document.getElementById('accuracy').textContent = `${accuracy} meters`;
+
+                // Print coordinates and accuracy to the console
+                console.log(`Latitude: ${lat}`);
+                console.log(`Longitude: ${lon}`);
+                console.log(`Accuracy: ${accuracy} meters`);
+            }, function(error) {
+                document.getElementById('coordinates').textContent = `Error code: ${error.code}`;
+                document.getElementById('accuracy').textContent = '';
+            });
+        } else {
+            document.getElementById('coordinates').textContent = "Geolocation is not supported by this browser.";
+            console.log(`Failed to extract location`);
+            document.getElementById('accuracy').textContent = '';
+        }
+    </script>
+
+</body>
+</html>
