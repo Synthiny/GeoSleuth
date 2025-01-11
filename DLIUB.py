@@ -18,8 +18,6 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 import os
-import os
-import time
 import random
 
 def tracker_check():
