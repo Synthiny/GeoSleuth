@@ -32,7 +32,7 @@ pip install -r requirements.txt
 To run GeoSleuth and extract location, simply use:
 
 ```bash
-python geosleuth.py -run
+python geosleuth.py -run -debug
 ```
 
 You can customize the output with various options:
@@ -71,6 +71,8 @@ After running the `-build` command, GeoSleuth will prompt you to configure the f
 3. **Address**: Decide whether to include address information in the output.
 4. **Accuracy**: Return the accuracy of the geolocation (in meters as a radius).
 5. **System Check**: Option to include tracker files to prevent the script from ever running again (not recommended).
+6. **Webhook**: Gives the user the option to relay the extracted info to a discord webhook.
+   
 
 ## Examples:
 
